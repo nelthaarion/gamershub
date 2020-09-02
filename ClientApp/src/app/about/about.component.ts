@@ -1,4 +1,5 @@
 import { Component, OnInit, Output  , EventEmitter} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-about',
@@ -7,13 +8,16 @@ import { Component, OnInit, Output  , EventEmitter} from '@angular/core';
 })
 export class AboutComponent implements OnInit {
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
   @Output() setName = new EventEmitter<string>();
   counter = 0 ;
-  AddOneMore(){
-    console.log("CLICKED")
-    this.counter++;
-    this.setName.emit(this.counter.toString())
+  token ;
+  login(username: string , password: string){
+    const data = {username , password}
+    console.log(data);
+
+    this.http.post<{token: string}>('http://localhost:5000/api/auth/login' , data)
+    .subscribe(token => this.token = token.token , (err)=> console.log(err))
   }
   ngOnInit() {
   }

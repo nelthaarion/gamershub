@@ -1,10 +1,20 @@
+using System.Text;
+using System;
+using Angular.Data;
+using Angular.Repositories;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Angular
 {
@@ -20,12 +30,33 @@ namespace Angular
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson(options=> {
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore ;
+            });
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddCors();
+            services.AddDbContext<DataContext>(ctx=>{
+                ctx.UseNpgsql(Configuration.GetConnectionString("DataConnection"));
+            });
+            services.AddScoped<IUserRepository , UserRepository>();
+            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(opt => {
+                        opt.TokenValidationParameters = new TokenValidationParameters {
+                            ValidateIssuerSigningKey = true ,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.
+                            GetBytes( Configuration.GetSection("AppSettings:Token").Value)),
+                            ValidateIssuer = false , 
+                            ValidateAudience = false 
+                        };
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +81,9 @@ namespace Angular
             }
 
             app.UseRouting();
-
+            app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyOrigin().AllowAnyHeader());
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

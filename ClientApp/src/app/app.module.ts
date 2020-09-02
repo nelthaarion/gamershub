@@ -21,7 +21,7 @@ import { HomeComponent } from './home/home.component';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'about' , component: AboutComponent }
-    ])
+    ]),
   ],
   providers: [],
   bootstrap: [AppComponent]
