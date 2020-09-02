@@ -232,3 +232,4 @@ _Pvt_Extensions
 ./bin
 .code/
 .ClientApp/node_modules
+appsettings.json
