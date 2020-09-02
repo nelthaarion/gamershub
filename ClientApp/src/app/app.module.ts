@@ -6,13 +6,17 @@ import { RouterModule } from '@angular/router';
 import { AboutComponent } from "./about/about.component";
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
+import { NavbarComponent } from './navbar/navbar.component';
+import { SignupComponent } from './signup/signup.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    AboutComponent
+    AboutComponent,
+    NavbarComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -20,7 +24,8 @@ import { HomeComponent } from './home/home.component';
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'about' , component: AboutComponent }
+      { path: 'about' , component: AboutComponent },
+      { path: "signup" , component: SignupComponent}
     ]),
   ],
   providers: [],

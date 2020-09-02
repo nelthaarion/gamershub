@@ -1,0 +1,23 @@
+
+<div class="container-fluid ">
+  <h1 class="text-center text-primary my-5">Sign up!</h1>
+  <div class="row">
+    <div class="col-10 offset-1 col-md-4 offset-md-4  ">
+      <form #form="ngForm" class="mt-3"  (ngSubmit) = "onSubmit(form)">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Username</label>
+          <input type="email" class="form-control" ngModel name="username" required   id="exampleInputEmail1">
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label"    >Password</label>
+          <input type="password" class="form-control" ngModel name="password" required id="exampleInputPassword1">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <h5 *ngIf="registerError">This username has been registered already! </h5>
+      </form>
+
+    </div>
+  </div>
+
+</div>
